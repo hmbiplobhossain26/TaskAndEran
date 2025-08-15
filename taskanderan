@@ -1,1 +1,155 @@
-hhh
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Bet Calculator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #fff;
+      color: #064e03;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .calculator {
+      width: 100%;
+      max-width: 460px;
+      padding: 30px 25px;
+      border: 2px solid #2e7d32;
+      border-radius: 14px;
+      box-shadow: 0 0 24px rgba(46, 125, 50, 0.35);
+      background-color: #f9fff9;
+      text-align: center;
+      overflow-y: auto;
+      max-height: 80vh;
+    }
+
+    h2 {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 14px 12px;
+      font-size: 18px;
+      border: 2px solid #2e7d32;
+      border-radius: 6px;
+      outline-color: #388e3c;
+      margin-bottom: 15px;
+    }
+
+    button.calc-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 18px;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      background-color: #2e7d32;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-bottom: 20px;
+    }
+
+    button.calc-btn:hover {
+      background-color: #388e3c;
+    }
+
+    h3 {
+      font-size: 18px;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #2e7d32;
+      padding-bottom: 5px;
+    }
+
+    #output {
+      background-color: #e8f5e9;
+      border: 2px solid #2e7d32;
+      padding: 14px;
+      border-radius: 8px;
+      text-align: left;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      margin-top: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="calculator">
+    <h2>Bet Calculator</h2>
+
+    <p>Total Sum:</p>
+    <input type="number" id="sum" placeholder="Enter total sum" />
+    <button class="calc-btn" onclick="solve()">Calculate</button>
+
+    <h3>2x Based Calculation</h3>
+    <div id="output2x"></div>
+
+    <h3>3x Based Calculation</h3>
+    <div id="output3x"></div>
+  </div>
+
+  <script>
+    function calculateBets(totalSum, n, r) {
+      var baseBet = totalSum / ((Math.pow(r, n) - 1) / (r - 1));
+      if (!isFinite(baseBet) || totalSum <= 0) return null;
+
+      var bets = [];
+      var total = 0;
+      for (var i = 0; i < n; i++) {
+        var bet = Math.round(baseBet * Math.pow(r, i));
+        bets.push(bet);
+        total += bet;
+      }
+      return { bets: bets, total: total };
+    }
+
+    function solve() {
+      var S = parseFloat(document.getElementById('sum').value);
+      var n = 6; // Updated from 5 to 6 steps
+
+      var result2x = calculateBets(S, n, 2);
+      var result3x = calculateBets(S, n, 3);
+
+      if (!result2x || !result3x) {
+        document.getElementById('output2x').innerHTML = "Invalid input!";
+        document.getElementById('output3x').innerHTML = "";
+        return;
+      }
+
+      var out2x = "";
+      result2x.bets.forEach((bet, i) => {
+        out2x += (i + 1) + ". Bet: " + bet + " Taka<br>";
+      });
+      out2x += "<br><strong>Total:</strong> " + result2x.total + " Taka";
+      document.getElementById('output2x').innerHTML = out2x;
+
+      var out3x = "";
+      result3x.bets.forEach((bet, i) => {
+        out3x += (i + 1) + ". Bet: " + bet + " Taka<br>";
+      });
+      out3x += "<br><strong>Total:</strong> " + result3x.total + " Taka";
+      document.getElementById('output3x').innerHTML = out3x;
+    }
+  </script>
+
+</body>
+</html>
